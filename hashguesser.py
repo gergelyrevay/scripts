@@ -4,16 +4,14 @@ import itertools
 import hashlib
 import hmac
 
-fields = []
-fields = sys.argv[1].split("|")
-separators = [",",".","-",";",":","_","|"," ","\t",""]
-md5 = hashlib.md5()
+def usage():
+    print("""Hash Guesser creates md5 and hmac hashes using a list a fields and a list of separators.
+$ hashguesser.py <field list>
+
+field list: list of field names to permutate separated by | between " (i.e.: "a|b|c" )
+separators: %s """ % " ".join(separators))
 
 def init():
-    if (len(fields) <= 0):
-        usage()
-        exit(1)
-
     print("Hash Guesser running with the following attributes:")
     print("Fields: %s" % fields)
     print("Separators: %s" % separators)
@@ -41,6 +39,18 @@ def main():
                 calculate_md5(permutation, separator)
                 calculate_hmac(permutation, separator)
     exit(0)
+
+
+fields = []
+separators = [",",".","-",";",":","_","|"," ","\t",""]
+
+if (len(sys.argv) < 2):
+        usage()
+        exit(1)
+
+fields = sys.argv[1].split("|")
+md5 = hashlib.md5()
+
 
 init()
 main()
