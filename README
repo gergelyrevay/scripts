@@ -1,1 +1,5 @@
 Here I store the scripts I wrote for different purposes. These are not well tested things so no responsibility is taken.
+
+= hashguesser.py =
+Simple script to generate a bunch of md5 and hmac hashes with a set of input fields
+and separators.
