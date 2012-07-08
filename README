@@ -3,3 +3,6 @@ Here I store the scripts I wrote for different purposes. These are not well test
 = hashguesser.py =
 Simple script to generate a bunch of md5 and hmac hashes with a set of input fields
 and separators.
+
+= backup.sh =
+Backup script to run on my NAS and backup host on the Internet to the NAS.
