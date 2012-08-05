@@ -87,32 +87,39 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-while getopts "i:h:u:p:e:d:" OPTIONS
-do
+while [ "$1" != "" ]; do
+    OPTIONS=$1
+    OPTARG=$2
+
+    logger "Option: $OPTIONS"
+    logger "Opt arg: $OPTARG"
     case $OPTIONS in
-        i)
+        -i)
             ssh_key=$OPTARG
             ;;
-        h)
+        -h)
             host_name=$OPTARG
             ;;
-        u)
+        -u)
             mysql_user=$OPTARG
             ;;
-        p)
+        -p)
             mysql_pwd=$OPTARG
             ;;
-        e)
+        -e)
             email=$OPTARG
             ;;
-        d)
+        -d)
             path=$OPTARG
-            ;;
-        ?)
+	        logthis "options path: $path"
+	        ;;
+            ?)
             usage
             exit
             ;;
-    esac    
+    esac
+    shift
+    shift
 done
 
 # create current path
