@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 #variables for command line arguments
 ssh_key=
 host_name=
@@ -8,7 +8,7 @@ email=
 path=
 
 # what to backup
-source_files="/etc /var/www /var/log /home /tmp/mysql_backup.gz /tmp/installed_packages"
+source_files="/etc /var/www /var/log /home/4dm1n /tmp/mysql_backup.gz /tmp/installed_packages"
 
 # usage
 usage() 
@@ -33,7 +33,7 @@ usage()
 run_on_server()
 {
     CMD="ssh -i $ssh_key $host_name $1"
-    $CMD &> $log_file
+    $CMD >> $log_file 2>&1
     handle_error $? "run_on_server failed to run '$CMD'"
 }
 
@@ -52,7 +52,7 @@ dump_installed_packages()
 # function to log in system log
 logthis()
 {
-    logger "BACKUP: $1"
+    logger BACKUP: $1
     echo BACKUP: $1 >> $log_file
 }
 
@@ -77,7 +77,7 @@ handle_error()
 # do the actual syncing
 sync_backup()
 {
-    rsync -avzR -e "ssh -i $ssh_key" --rsync-path "sudo rsync" $host_name:"$source_files" $path &> $log_file
+    rsync -avvvzR -e "ssh -i $ssh_key" --rsync-path "sudo rsync" $host_name:"$source_files" $path >> $log_file 2>&1
     handle_error $? "sync_backup failed"
 }
 
@@ -123,7 +123,13 @@ while [ "$1" != "" ]; do
 done
 
 # create current path
-path=$path$(date | cut -d" " -f2)
+
+month=$(date +"%b")
+path="$path$month"
+
+if [ $ssh_key = "" -o  $host_name = "" -o $mysql_user = "" -o $mysql_pwd = "" -o $path = ""]; then
+    logthis "Insufficient command line parameters."
+fi
 
 if [ ! -d $path ]; then
     mkdir -p $path
@@ -131,8 +137,9 @@ if [ ! -d $path ]; then
     logthis "New directory is created:$path"
 fi
 
-path=$path/
 log_file=$path/backup-$(date -I).log
+
+touch $log_file
 
 logthis "Running backup"
 
